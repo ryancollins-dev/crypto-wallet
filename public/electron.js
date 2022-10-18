@@ -1,4 +1,5 @@
 const { app, BrowserWindow, Menu } = require('electron');
+const isDev = require('electron-is-dev');
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -10,7 +11,7 @@ function createWindow() {
     resizable: false,
   });
 
-  win.loadURL(`http://localhost:3000`);
+  win.loadURL(isDev ? 'http://localhost:3000' : 'index.html');
 }
 
 app.on('ready', createWindow);
