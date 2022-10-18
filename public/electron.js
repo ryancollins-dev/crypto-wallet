@@ -1,3 +1,4 @@
+const { Menu } = require('antd');
 const { app, BrowserWindow } = require('electron');
 
 function createWindow() {
@@ -14,3 +15,20 @@ function createWindow() {
 }
 
 app.on('ready', createWindow);
+
+Menu.setApplicationMenu(
+  Menu.buildFromTemplate([
+    {
+      label: 'Help',
+      submenu: [
+        {
+          label: 'About Node',
+          click() {
+            const window = BrowserWindow.getFocusedWindow();
+            window.webContents.send('commands', 'show-node-info');
+          },
+        },
+      ],
+    },
+  ])
+);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
 
 import 'antd/dist/antd.min.css';
@@ -18,6 +18,22 @@ function App() {
       setNode(result);
     }
   });
+
+  useEffect(() => {
+    if (window.require) {
+      const electron = window.require('electron');
+      const ipcRenderer = electron.ipcRenderer;
+      const showNodeInfo = (_, command) => {
+        if (command === 'show-node-info') {
+          window.alert(`Node: ${node}`);
+        }
+      };
+      ipcRenderer.on('commands', showNodeInfo);
+      return () => {
+        ipcRenderer.Renderer.off('commands', showNodeInfo);
+      };
+    }
+  }, [node]);
 
   return (
     <div className='App'>
