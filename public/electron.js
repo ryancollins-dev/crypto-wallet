@@ -1,5 +1,4 @@
-const { Menu } = require('antd');
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, Menu } = require('electron');
 
 function createWindow() {
   const win = new BrowserWindow({

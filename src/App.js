@@ -3,13 +3,15 @@ import Web3 from 'web3';
 
 import 'antd/dist/antd.min.css';
 import './App.css';
-import { Layout } from 'antd';
-const { Header, Footer, Sider, Content } = Layout;
+import { Layout, Tree } from 'antd';
 
+const { Header, Footer, Sider, Content } = Layout;
+const { TreeNode } = Tree;
 const web3 = new Web3('ws://localhost:7545');
 
 function App() {
   const [node, setNode] = useState('Unknown Node');
+  const [accounts, setAccounts] = useState([]);
 
   web3.eth.getNodeInfo(function (error, result) {
     if (error) {
@@ -20,6 +22,13 @@ function App() {
   });
 
   useEffect(() => {
+    web3.eth.getAccounts(function (error, accounts) {
+      if (error) {
+        console.log(error);
+      } else {
+        setAccounts(accounts);
+      }
+    });
     if (window.require) {
       const electron = window.require('electron');
       const ipcRenderer = electron.ipcRenderer;
@@ -35,12 +44,30 @@ function App() {
     }
   }, [node]);
 
+  const formatAccountName = (name) => {
+    if (name && name.length > 10) {
+      return `${name.substring(0, 10)}...`;
+    }
+    return 'Noname';
+  };
+
   return (
     <div className='App'>
       <Layout>
         <Header>{node}</Header>
         <Layout>
-          <Sider>Sider</Sider>
+          <Sider>
+            <Tree>
+              <TreeNode title='Accounts' key='accounts'>
+                {accounts.map((account) => (
+                  <TreeNode
+                    key={account}
+                    title={formatAccountName(account)}
+                  ></TreeNode>
+                ))}
+              </TreeNode>
+            </Tree>
+          </Sider>
           <Content>Content</Content>
         </Layout>
         <Footer>Footer</Footer>
